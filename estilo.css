@@ -1,0 +1,955 @@
+/* Define CSS Variables for a cohesive color palette */
+:root {
+    /* Backgrounds */
+    --bg-primary: #0A0A0C; /* Very dark background for body */
+    --bg-secondary: #1A1C22; /* Main chart and elevated panel backgrounds */
+    --bg-tertiary: #2D303A; /* Button and input backgrounds */
+    --bg-dark-hover: #3F424A; /* Darker hover state for components */
+
+    /* Borders & Dividers */
+    --border-color: #4A4E58; /* Subtle dividing lines */
+    --border-light: #6A6E7B; /* Slightly lighter border for accents */
+
+    /* Text Colors */
+    --text-color-primary: #E0E0E0; /* Brightest text for main content */
+    --text-color-secondary: #A0A0A0; /* Subdued text for labels, clock */
+    --text-color-inverted: #1A1C22; /* Dark text on light buttons */
+
+    /* Chart specific colors */
+    --chart-line-neutral: #6C7380; /* Neutral grey for grid/horizontal lines */
+    --chart-current-level: #D0D0D0; /* White/light grey for current value line */
+    --candle-green-fill: #34C759; /* More vibrant green */
+    --candle-red-fill: #FF3B30; /* More vibrant red */
+
+    /* Neon/Highlight Colors - High Impact */
+    --neon-blue-ema: #00E0FF; /* Brighter Cyan */
+    --neon-golden-ema: #FFDB58; /* Brighter Gold */
+    --neon-green-sr: #00FF00; /* Pure green for SR highlight */
+    --neon-red-sr: #FF0000; /* Pure red for SR highlight */
+    --neon-version: #FF4500; /* Orange-Red for version glow */
+
+    /* Button specific base colors (for different ranges) */
+    --btn-danger-base: #D9465B; /* Vibrant Red */
+    --btn-neutral-base: #C2C7D0; /* Light Grey/White */
+    --btn-success-base: #3CB371; /* Medium Green */
+    --btn-gold-base: #DAA520; /* Dark Goldenrod */
+    --btn-pink-base: #D8BFD8; /* Thistle (soft purple-pink) */
+
+    /* Action buttons */
+    --btn-action-main: #4A566C; /* Dark blue-grey for undo/reset */
+    --btn-action-hover: #5F6D82; /* Lighter blue-grey on hover */
+    --btn-fib-action: #FFB300; /* Vibrant gold for Fibonacci */
+    --btn-mini-fib-action: #00ACC1; /* Vibrant cyan for Mini Fibonacci */
+    --btn-zoom-action: #3F4858; /* Darker grey for zoom buttons */
+}
+
+body {
+    font-family: 'Roboto', 'Open Sans', 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: radial-gradient(circle at top left, var(--bg-secondary) 0%, var(--bg-primary) 70%);
+    color: var(--text-color-primary);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    justify-content: flex-start;
+    overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+}
+
+h1 {
+    font-family: 'Agbalumo', cursive;
+    font-size: 2.2em; /* Slightly larger for impact */
+    text-align: center;
+    margin-bottom: 25px; /* More space */
+    color: #fff;
+    letter-spacing: 1px; /* Tighter letter spacing */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Stronger initial glow */
+}
+
+h1 span {
+    animation: neonGlow 1.5s ease-in-out infinite alternate;
+    font-size: 0.5em; /* Keep version number smaller */
+    vertical-align: middle; /* Align better with text */
+    padding: 2px 6px; /* Adjust padding */
+    border-radius: 4px; /* Slightly less rounded */
+    background-color: var(--neon-version); /* Use the new neon version color */
+    box-shadow: 0 0 8px var(--neon-version); /* Add box shadow for depth */
+}
+
+@keyframes neonGlow {
+    from {
+        text-shadow: 0 0 8px var(--neon-version), 0 0 15px var(--neon-version);
+        box-shadow: 0 0 5px var(--neon-version);
+    }
+    to {
+        text-shadow: 0 0 20px var(--neon-version), 0 0 35px var(--neon-version);
+        box-shadow: 0 0 15px var(--neon-version);
+    }
+}
+
+#view-selector-container {
+    position: absolute;
+    top: 20px; /* Adjust position */
+    right: 20px; /* Adjust position */
+    z-index: 100;
+}
+
+#chart-view-selector {
+    padding: 10px 15px; /* Larger padding */
+    border-radius: 10px; /* More rounded */
+    background-color: var(--bg-tertiary);
+    color: var(--text-color-primary);
+    border: 1px solid var(--border-light); /* Lighter border */
+    font-size: 1.05em; /* Slightly larger font */
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.05); /* Enhanced shadow */
+    appearance: none; /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 18px;
+    transition: all 0.2s ease-in-out;
+}
+
+#chart-view-selector:hover {
+    border-color: var(--neon-blue-ema);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.1);
+}
+
+#chart-view-selector:focus {
+    outline: none;
+    border-color: var(--neon-blue-ema);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+#chart-container {
+    width: 98%;
+    max-width: 1200px;
+    height: 600px;
+    border-radius: 15px; /* More rounded corners */
+    margin-bottom: 0;
+    background-color: var(--bg-secondary);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.6), /* Deeper main shadow */
+        inset 0 0 15px rgba(0, 123, 255, 0.1); /* Subtle inner glow */
+    overflow: hidden;
+    padding: 15px; /* Increased padding */
+    margin-top: 25px; /* More space from title */
+    border: 1px solid var(--border-color); /* Use general border color */
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    transition: box-shadow 0.5s ease-in-out, border-color 0.5s ease-in-out;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Green glow/border for Uptrend */
+#chart-container.ema-trend-up {
+    box-shadow:
+        0 0 15px var(--neon-green-sr),
+        inset 0 0 10px rgba(0, 255, 0, 0.3);
+    border-color: rgba(0, 255, 0, 0.6);
+}
+
+/* Red glow/border for Downtrend */
+#chart-container.ema-trend-down {
+     box-shadow:
+        0 0 15px var(--neon-red-sr),
+        inset 0 0 10px rgba(255, 0, 0, 0.3);
+    border-color: rgba(255, 0, 0, 0.6);
+}
+
+/* Base states for charts */
+#chart, #mini-chart-container {
+    display: none; /* Hidden by default, controlled by JS classes */
+}
+
+/* State for showing only main chart */
+.chart-mode-main #chart {
+    display: block; /* Show main chart */
+    flex-grow: 1;
+    width: 100%; /* Ensure it takes full width when alone */
+    height: 100%; /* Ensure it takes full height when alone */
+}
+
+.chart-mode-main #mini-chart-container {
+    display: none; /* Hide mini chart */
+}
+
+/* State for showing only mini chart (full screen) */
+.chart-mode-mini #chart {
+    display: none; /* Hide main chart */
+}
+
+.chart-mode-mini #mini-chart-container {
+    display: block; /* Show mini chart */
+    position: static; /* Critical: remove absolute positioning to fill parent */
+    width: 100%; /* Fill parent */
+    height: 100%; /* Fill parent */
+    top: auto; /* Reset properties from absolute positioning */
+    right: auto; /* Reset properties from absolute positioning */
+    opacity: 1; /* Make it fully opaque */
+    background-color: transparent; /* Match main chart container's background */
+    border: none; /* Remove mini-chart's specific border */
+    margin: 0; /* Remove any margins */
+    padding: 0; /* Remove any padding */
+}
+
+/* State for showing both charts (default) */
+.chart-mode-both #chart {
+    display: block;
+    flex-grow: 1;
+    width: auto; /* Let flexbox decide */
+    height: auto; /* Let flexbox decide */
+}
+
+.chart-mode-both #mini-chart-container {
+    display: block;
+    position: absolute; /* Revert to absolute for small overlay */
+    top: 20px; /* Adjust top */
+    right: 20px; /* Adjust right */
+    width: 250px; /* Slightly larger mini chart */
+    height: 180px; /* Slightly larger mini chart */
+    opacity: 0.9; /* Slightly less opaque */
+    background-color: rgba(26, 28, 34, 0.7); /* More translucent background for glass effect */
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    border: 1px solid var(--border-light); /* Lighter, more defined border */
+    border-radius: 12px; /* Consistent rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 5px rgba(255, 255, 255, 0.1); /* Deeper shadow */
+}
+
+#mini-chart {
+    width: 100%;
+    height: 100%;
+}
+
+/* Added styles for mini-chart support/resistance lines */
+.mini-support-line {
+    stroke: rgba(0, 255, 0, 0.3); /* Softer green */
+    stroke-width: 0.8; /* Thinner */
+    stroke-dasharray: 2, 2;
+}
+
+.mini-resistance-line {
+    stroke: rgba(255, 0, 0, 0.3); /* Softer red */
+    stroke-width: 0.8; /* Thinner */
+    stroke-dasharray: 2, 2;
+}
+
+/* Highlighted Support/Resistance Styles for Mini Chart (solid, neon) */
+.mini-support-line.mini-neon-green-sr {
+     stroke: var(--neon-green-sr);
+     stroke-width: 1.2; /* Slightly thicker */
+     stroke-dasharray: none;
+     filter: drop-shadow(0 0 3px var(--neon-green-sr)); /* Softer glow */
+     animation: neonGlowGreenSR 1s ease-in-out infinite alternate;
+}
+
+.mini-resistance-line.mini-neon-red-sr {
+     stroke: var(--neon-red-sr);
+     stroke-width: 1.2; /* Slightly thicker */
+     stroke-dasharray: none;
+     filter: drop-shadow(0 0 3px var(--neon-red-sr)); /* Softer glow */
+     animation: neonGlowRedSR 1s ease-in-out infinite alternate;
+}
+
+#chart {
+    width: 100%;
+    height: 100%;
+}
+
+#toolbar {
+    /* width: 40px;
+    background-color: #1c222b;
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 0;
+    gap: 5px;
+    border-radius: 5px;
+    box-shadow: -1px 0 2px rgba(0, 0, 0, 0.3);
+    border: none;
+    background: #1c222b; */
+}
+
+.toolbar-icon {
+    /* width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    color: #787b86;
+    background-color: transparent;
+    border: none; */
+}
+
+.toolbar-icon:hover {
+    /* transform: scale(1.1);
+    background-color: #262d3a;
+    color: #fff;
+    box-shadow: none; */
+}
+
+.toolbar-icon.active {
+    /* background-color: #2a303c;
+    color: #fff;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5); */
+}
+
+.toolbar-icon svg {
+    /* width: 18px;
+    height: 18px;
+    fill: currentColor; */
+}
+
+#buttons {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px; /* Increased gap */
+    margin-bottom: 20px;
+    margin-top: 20px; /* More space */
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Increased gap */
+    margin-bottom: 0;
+}
+
+.button-row-reset {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px; /* More space */
+}
+
+/* Removed old message styles (e.g. #trend-message, #prediction-message, #signal-message) */
+/* The below is a new message container */
+#signal-overlay-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1.8em; /* Large and prominent */
+    font-weight: bold;
+    text-align: center;
+    color: var(--text-color-primary); /* Default white text */
+    background-color: rgba(30, 30, 30, 0.8); /* Dark, slightly transparent background */
+    border: 2px solid var(--border-light); /* Subtle border */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6); /* Deep shadow */
+    z-index: 100;
+    pointer-events: none; /* Allow clicks to pass through */
+    opacity: 0; /* Hidden by default */
+    display: none; /* Ensured hidden, important for initial state */
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+#signal-overlay-message.fade-in {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: signalPulse 1.5s infinite alternate; /* Add a subtle pulse */
+}
+
+/* Specific message types neon effects */
+#signal-overlay-message.entrada {
+    color: var(--neon-blue-ema); /* Cyan */
+    border-color: var(--neon-blue-ema);
+    box-shadow: 0 0 15px var(--neon-blue-ema), 0 0 30px rgba(0, 224, 255, 0.5);
+    text-shadow: 0 0 5px var(--neon-blue-ema);
+}
+
+#signal-overlay-message.acierto {
+    color: var(--neon-green-sr); /* Green */
+    border-color: var(--neon-green-sr);
+    box-shadow: 0 0 15px var(--neon-green-sr), 0 0 30px rgba(0, 255, 0, 0.5);
+    text-shadow: 0 0 5px var(--neon-green-sr);
+}
+
+#signal-overlay-message.fail_retry {
+    color: var(--neon-golden-ema); /* Gold */
+    border-color: var(--neon-golden-ema);
+    box-shadow: 0 0 15px var(--neon-golden-ema), 0 0 30px rgba(255, 219, 88, 0.5);
+    text-shadow: 0 0 5px var(--neon-golden-ema);
+}
+
+#signal-overlay-message.fallo { /* Final fail */
+    color: var(--neon-red-sr); /* Red */
+    border-color: var(--neon-red-sr);
+    box-shadow: 0 0 15px var(--neon-red-sr), 0 0 30px rgba(255, 0, 0, 0.5);
+    text-shadow: 0 0 5px var(--neon-red-sr);
+}
+
+@keyframes signalPulse {
+    from { transform: translate(-50%, -50%) scale(0.98); opacity: 0.9; }
+    to { transform: translate(-50%, -50%) scale(1.02); opacity: 1; }
+}
+
+/* Session Stats Counter */
+#session-stats {
+    position: absolute;
+    bottom: 20px; /* Adjust to corner */
+    right: 20px; /* Adjust to corner */
+    background-color: rgba(10, 10, 12, 0.7); /* Match body background for transparency */
+    backdrop-filter: blur(3px); /* Subtle blur */
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+#session-stats .stat-hits {
+    color: var(--neon-green-sr);
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+#session-stats .stat-misses {
+    color: var(--neon-red-sr);
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+button {
+    padding: 10px 15px; /* More padding */
+    cursor: pointer;
+    border: 1px solid var(--border-color); /* Consistent border */
+    border-radius: 8px; /* Slightly more rounded */
+    font-size: 0.9em; /* Slightly larger font */
+    transition: all 0.2s ease, box-shadow 0.2s ease; /* All properties transition */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.05); /* Enhanced shadow */
+    letter-spacing: 0.2px; /* Slightly more space for professionalism */
+    width: auto;
+    flex-grow: 0;
+    min-width: 70px; /* Minimum width */
+    text-align: center;
+    color: var(--text-color-primary);
+    background-color: var(--bg-tertiary); /* Base tertiary background */
+}
+
+button:hover {
+    transform: translateY(-2px); /* More pronounced lift */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.1); /* Deeper shadow on hover */
+    background-color: var(--bg-dark-hover); /* Darker hover background */
+    border-color: var(--border-light); /* Lighter border on hover */
+}
+
+button#undo,
+button#reset {
+    background-color: var(--btn-action-main);
+    border-color: var(--btn-action-main); /* Consistent border color */
+}
+
+button#undo:hover,
+button#reset:hover {
+    background-color: var(--btn-action-hover);
+    border-color: var(--btn-action-hover);
+}
+
+button[data-value="-5"],
+button[data-value="-4"],
+button[data-value="-3"] {
+    background-color: var(--btn-danger-base);
+    border-color: var(--btn-danger-base);
+    color: var(--text-color-inverted); /* Dark text on red button */
+}
+button[data-value="-5"]:hover,
+button[data-value="-4"]:hover,
+button[data-value="-3"]:hover {
+    background-color: color-mix(in srgb, var(--btn-danger-base) 90%, black);
+    border-color: color-mix(in srgb, var(--btn-danger-base) 90%, black);
+}
+
+button[data-value="-2"],
+button[data-value="-1"] {
+    background-color: var(--btn-neutral-base);
+    color: var(--text-color-inverted); /* Dark text on light button */
+    border-color: var(--btn-neutral-base);
+}
+button[data-value="-2"]:hover,
+button[data-value="-1"]:hover {
+    background-color: color-mix(in srgb, var(--btn-neutral-base) 90%, black);
+    border-color: color-mix(in srgb, var(--btn-neutral-base) 90%, black);
+}
+
+button[data-value="1"],
+button[data-value="2"] {
+    background-color: var(--btn-success-base);
+    border-color: var(--btn-success-base);
+    color: var(--text-color-inverted); /* Dark text on green button */
+}
+button[data-value="1"]:hover,
+button[data-value="2"]:hover {
+    background-color: color-mix(in srgb, var(--btn-success-base) 90%, black);
+    border-color: color-mix(in srgb, var(--btn-success-base) 90%, black);
+}
+
+button[data-value="3"],
+button[data-value="4"] {
+    background-color: var(--btn-gold-base);
+    color: var(--text-color-inverted); /* Dark text on gold button */
+    border-color: var(--btn-gold-base);
+}
+button[data-value="3"]:hover,
+button[data-value="4"]:hover {
+    background-color: color-mix(in srgb, var(--btn-gold-base) 90%, black);
+    border-color: color-mix(in srgb, var(--btn-gold-base) 90%, black);
+}
+
+button[data-value="5"] {
+    background-color: var(--btn-pink-base);
+    border-color: var(--btn-pink-base);
+    color: var(--text-color-inverted); /* Dark text on pink button */
+}
+button[data-value="5"]:hover {
+    background-color: color-mix(in srgb, var(--btn-pink-base) 90%, black);
+    border-color: color-mix(in srgb, var(--btn-pink-base) 90%, black);
+}
+
+button[data-action="fibonacci"] {
+    background-color: var(--btn-fib-action);
+    color: var(--text-color-inverted);
+    font-weight: bold;
+    border-color: var(--btn-fib-action);
+}
+
+button[data-action="fibonacci"]:hover {
+     background-color: color-mix(in srgb, var(--btn-fib-action) 90%, black);
+     border-color: color-mix(in srgb, var(--btn-fib-action) 90%, black);
+}
+
+/* New style for Mini Fibonacci button */
+button[data-action="mini-fibonacci"] {
+    background-color: var(--btn-mini-fib-action);
+    color: var(--text-color-inverted);
+    font-weight: bold;
+    border-color: var(--btn-mini-fib-action);
+}
+
+button[data-action="mini-fibonacci"]:hover {
+    background-color: color-mix(in srgb, var(--btn-mini-fib-action) 90%, black);
+    border-color: color-mix(in srgb, var(--btn-mini-fib-action) 90%, black);
+}
+
+/* New styles for zoom buttons */
+button.zoom-button {
+    background-color: var(--btn-zoom-action);
+    color: var(--text-color-primary);
+    padding: 0;
+    width: 45px; /* Slightly larger */
+    height: 45px; /* Slightly larger */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: var(--btn-zoom-action);
+    border-radius: 50%; /* Make them round */
+}
+
+button.zoom-button:hover {
+    background-color: color-mix(in srgb, var(--btn-zoom-action) 90%, var(--border-light));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Chart Line Styles */
+.horizontal-line {
+    stroke: var(--chart-line-neutral);
+    stroke-width: 1;
+    stroke-dasharray: 4,4; /* Larger dashes */
+    opacity: 0.4; /* More subtle */
+}
+
+.neon-blue {
+    stroke: var(--neon-blue-ema);
+    stroke-width: 2; /* Thicker */
+    opacity: 0.8; /* Slightly less opaque */
+    filter: drop-shadow(0 0 5px var(--neon-blue-ema)); /* Stronger glow */
+}
+
+.neon-golden {
+    stroke: var(--neon-golden-ema);
+    stroke-width: 2; /* Thicker */
+    opacity: 0.8; /* Slightly less opaque */
+    filter: drop-shadow(0 0 5px var(--neon-golden-ema)); /* Stronger glow */
+}
+
+.candle {
+    stroke-width: 1.5; /* Thicker stroke for definition */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.1)); /* Subtle glow */
+}
+
+.candle[fill="#28a745"] { /* Target the old green fill */
+    fill: var(--candle-green-fill);
+    stroke: color-mix(in srgb, var(--candle-green-fill) 80%, white); /* Brighter stroke */
+    filter: drop-shadow(0 0 6px var(--candle-green-fill)); /* Stronger glow */
+}
+
+.candle[fill="#dc3545"] { /* Target the old red fill */
+    fill: var(--candle-red-fill);
+    stroke: color-mix(in srgb, var(--candle-red-fill) 80%, white); /* Brighter stroke */
+    filter: drop-shadow(0 0 6px var(--candle-red-fill)); /* Stronger glow */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(0.97);
+    }
+    to {
+        transform: scale(1.03);
+    }
+}
+
+#clock {
+    text-align: left;
+    font-size: 1em; /* Slightly larger */
+    color: var(--text-color-secondary); /* Use secondary text color */
+    position: absolute;
+    top: 20px; /* Align with selector */
+    left: 20px; /* Align with padding */
+    font-weight: 500;
+}
+
+/*
+    Responsive Design for Mobile, Tablet, and Desktop
+    The application utilizes fluid widths, flexible layouts (flexbox),
+    and media queries to adapt its appearance across various screen sizes.
+    Chart dimensions are dynamically calculated in JavaScript based on
+    container size, ensuring D3.js renders correctly.
+*/
+
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+    }
+
+    #view-selector-container {
+        top: 15px;
+        right: 15px;
+    }
+
+    #chart-view-selector {
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border-radius: 8px;
+        background-size: 16px;
+    }
+
+    #chart-container {
+        margin-top: 15px;
+        padding: 10px;
+        height: 450px;
+        border-radius: 12px;
+    }
+
+    /* Adjusted mini chart size for tablets */
+    #mini-chart-container.chart-mode-both {
+        width: 160px; /* Reduced width */
+        height: 110px; /* Reduced height */
+        top: 15px;
+        right: 15px;
+        border-radius: 10px;
+    }
+
+    #signal-overlay-message {
+        font-size: 1.4em;
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+
+    #session-stats {
+        bottom: 15px;
+        right: 15px;
+        font-size: 0.9em;
+        padding: 8px 12px;
+        border-radius: 6px;
+    }
+
+    #buttons {
+        gap: 10px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .button-row {
+        gap: 8px;
+    }
+
+    button {
+        font-size: 0.8em;
+        padding: 8px 12px;
+        min-width: 60px;
+        border-radius: 6px;
+    }
+
+    button.zoom-button {
+        width: 38px;
+        height: 38px;
+    }
+
+    #clock {
+        font-size: 0.9em;
+        top: 15px;
+        left: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.6em;
+        margin-bottom: 10px;
+    }
+
+    #chart-container {
+        height: 350px;
+        padding: 8px;
+        margin-top: 10px;
+        border-radius: 10px;
+    }
+
+    /* Adjusted mini chart size for mobile */
+    #mini-chart-container.chart-mode-both {
+        width: 120px; /* Significantly reduced width */
+        height: 80px; /* Significantly reduced height */
+        top: 10px;
+        right: 10px;
+        border-radius: 8px;
+    }
+
+    #signal-overlay-message {
+        font-size: 1.2em;
+        padding: 8px 15px;
+        border-radius: 8px;
+    }
+
+    #session-stats {
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.8em;
+        padding: 6px 10px;
+        border-radius: 5px;
+    }
+
+    #buttons {
+        gap: 8px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .button-row {
+        flex-wrap: wrap;
+        gap: 6px;
+        /* For better distribution on small screens, consider space-around or space-between
+           if centering looks awkward with uneven rows. For now, keep current behavior. */
+    }
+
+    button {
+        font-size: 0.65em; /* Slightly smaller font to fit more text */
+        padding: 5px 8px; /* Reduced padding */
+        min-width: 45px; /* Reduced min-width to allow more buttons per row */
+        border-radius: 5px;
+        flex-basis: auto; /* Allow content to dictate size */
+    }
+
+    button.zoom-button {
+        width: 32px;
+        height: 32px;
+        min-width: unset; /* Remove min-width restriction for zoom buttons */
+    }
+
+    #clock {
+        font-size: 0.8em;
+        top: 10px;
+        left: 10px;
+    }
+}
+
+/* Added styles for Fibonacci */
+.fibonacci-group {
+    pointer-events: none; /* Allows interaction with chart below */
+}
+
+.fibonacci-line {
+    stroke: var(--neon-golden-ema);
+    stroke-width: 1.5;
+    stroke-dasharray: 4, 2;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.fibonacci-anchor-line {
+    stroke: rgba(255, 215, 0, 0.3); /* Softer initial color */
+    stroke-width: 2; /* Thicker */
+    stroke-dasharray: 6, 6; /* Larger dashes */
+    pointer-events: all;
+    cursor: ns-resize;
+    transition: stroke-width 0.1s ease, stroke 0.1s ease, filter 0.1s ease;
+}
+.fibonacci-anchor-line:hover {
+    stroke-width: 3; /* Even thicker on hover */
+    stroke: var(--neon-golden-ema);
+    filter: drop-shadow(0 0 8px var(--neon-golden-ema)); /* Add glow on hover */
+}
+
+.fibonacci-temp-anchor {
+    fill: var(--neon-golden-ema);
+    filter: drop-shadow(0 0 5px var(--neon-golden-ema));
+    pointer-events: none;
+}
+
+.fibonacci-text {
+    fill: var(--neon-golden-ema);
+    font-size: 0.75em;
+    font-weight: bold;
+    text-anchor: start;
+    dominant-baseline: middle;
+    pointer-events: none;
+    text-shadow: 0 0 3px rgba(0,0,0,0.9), 0 0 5px rgba(0,0,0,0.7);
+}
+
+.golden-zone-band {
+    fill: rgba(255, 215, 0, 0.08); /* Slightly more opaque */
+    pointer-events: none;
+}
+
+/* Default Support/Resistance Styles (dashed, not neon) */
+.support-line {
+    stroke: rgba(0,255,0,0.3); /* More subtle */
+    stroke-width: 1;
+    stroke-dasharray: 6,6; /* Larger dashes */
+    filter: none;
+}
+
+.resistance-line {
+    stroke: rgba(255,0,0,0.3); /* More subtle */
+    stroke-width: 1;
+    stroke-dasharray: 6,6; /* Larger dashes */
+    filter: none;
+}
+
+/* Current Level Line Style */
+.current-level-line {
+    stroke: var(--chart-current-level);
+    stroke-width: 1.5; /* Slightly thicker */
+    stroke-dasharray: 5,5; /* Clearer dashes */
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Highlighted Support/Resistance Styles (solid, neon) */
+.support-line.neon-green-sr {
+     stroke: var(--neon-green-sr);
+     stroke-width: 2; /* Thicker */
+     stroke-dasharray: none;
+     filter: drop-shadow(0 0 6px var(--neon-green-sr)); /* Stronger glow */
+     animation: neonGlowGreenSR 1s ease-in-out infinite alternate;
+}
+
+.resistance-line.neon-red-sr {
+     stroke: var(--neon-red-sr);
+     stroke-width: 2; /* Thicker */
+     stroke-dasharray: none;
+     filter: drop-shadow(0 0 6px var(--neon-red-sr)); /* Stronger glow */
+     animation: neonGlowRedSR 1s ease-in-out infinite alternate;
+}
+
+/* Keyframes for the glow animation */
+@keyframes neonGlowGreenSR {
+    from { filter: drop-shadow(0 0 4px var(--neon-green-sr)); opacity: 1; }
+    to { filter: drop-shadow(0 0 9px var(--neon-green-sr)); opacity: 0.9; }
+}
+
+@keyframes neonGlowRedSR {
+    from { filter: drop-shadow(0 0 4px var(--neon-red-sr)); opacity: 1; }
+    to { filter: drop-shadow(0 0 9px var(--neon-red-sr)); opacity: 0.9; }
+}
+
+/* New styles for mini-fibonacci */
+.mini-fibonacci-group {
+    pointer-events: auto;
+}
+
+.mini-fibonacci-anchor-line {
+    stroke: rgba(255, 215, 0, 0.2);
+    stroke-width: 1.5; /* Slightly thicker */
+    stroke-dasharray: 4, 4;
+    pointer-events: all;
+    cursor: ns-resize;
+    transition: stroke-width 0.1s ease, stroke 0.1s ease;
+}
+.mini-fibonacci-anchor-line:hover {
+    stroke-width: 2.5;
+    stroke: var(--neon-golden-ema);
+    filter: drop-shadow(0 0 5px var(--neon-golden-ema));
+}
+
+.mini-fibonacci-temp-anchor {
+    pointer-events: none;
+    fill: var(--neon-golden-ema);
+}
+
+.mini-golden-zone-band {
+    fill: rgba(255, 215, 0, 0.05);
+    pointer-events: none;
+}
+
+/* Mini chart points and line */
+#mini-chart path[stroke="#fff"] { /* Target the white line */
+    stroke: var(--text-color-primary); /* Use primary text color for consistency */
+    stroke-width: 1.8; /* Slightly thicker */
+    opacity: 0.8; /* Less translucent */
+}
+
+.mini-point {
+    opacity: 0.8; /* Less translucent */
+    r: 4px; /* Default size (was 3px, now slightly larger) */
+    transition: all 0.1s ease;
+}
+.mini-point:hover {
+    r: 5px; /* Slightly larger on hover */
+    opacity: 1;
+    filter: drop-shadow(0 0 8px currentColor); /* Stronger glow on hover */
+}

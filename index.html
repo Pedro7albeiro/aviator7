@@ -1,0 +1,74 @@
+﻿
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico Pro</title>
+    <link rel="stylesheet" href="estilo.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <div style="position: relative; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; padding-right: 20px; box-sizing: border-box;">
+        <h1>Gráfico Pro <span style="display:inline-block; padding: 3px 7px; border-radius: 5px; background-color: red; color: white; font-size: 0.6em; vertical-align: super; animation: neonGlow 1.5s ease-in-out infinite alternate;">V 3.2 </span></h1>
+        <div id="view-selector-container">
+            <label for="chart-view-selector" class="sr-only">Seleccionar vista del gráfico</label>
+            <select id="chart-view-selector">
+                <option value="both">Ambos gráficos</option>
+                <option value="main">Gráfico profesional</option>
+                <option value="mini">Gráfico de tendencia</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="chart-container">
+        <svg id="chart">
+            <g class="fibonacci-group"></g> <!-- Group for Fibonacci elements -->
+        </svg>
+        <div id="mini-chart-container">
+            <svg id="mini-chart"></svg>
+        </div>
+        <div id="signal-overlay-message" class="signal-message"></div> <!-- New div for signal messages -->
+        <div id="session-stats"></div> <!-- New div for session counters -->
+    </div>
+    
+    <div id="buttons">
+        <div class="button-row">
+            <button data-value="-5" data-mini-value="-1">1.00 / 1,09</button>
+            <button data-value="-4" data-mini-value="-1">1.10 / 1.29</button>
+            <button data-value="-3" data-mini-value="-1">1.30 / 1.49</button>
+            <button data-value="-2" data-mini-value="-1">1.50 / 1.79</button>
+            <button data-value="-1" data-mini-value="-1">1.80 / 1.99</button>
+        </div>
+        <div class="button-row">
+            <button data-value="1" data-mini-value="1">2.00 / 3.99</button>
+            <button data-value="2" data-mini-value="1">4.00 / 5.99</button>
+            <button data-value="3" data-mini-value="1">6.00 / 7,99</button>
+            <button data-value="4" data-mini-value="1">8.00 / 9,99</button>
+            <button data-value="5" data-mini-value="1">10+</button>
+        </div>
+        <div class="button-row">
+            <button id="undo">Retroceder</button>
+            <button data-action="fibonacci">Fibonacci</button>
+            <button data-action="mini-fibonacci">Mini Fibonacci</button>
+            <button id="zoom-in" class="zoom-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                </svg>
+            </button>
+            <button id="zoom-out" class="zoom-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="button-row button-row-reset">
+            <button id="reset">Reiniciar</button>
+        </div>
+    </div>
+
+    <script src="graf.js"></script>
+    <script src="cod.js"></script>
+    <script src="minigraf.js"></script>
+</body>
+</html>
